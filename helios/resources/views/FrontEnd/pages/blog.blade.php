@@ -95,6 +95,7 @@
               <div class="layered layered-category">
                 <div class="layered-content">
                   <ul class="tree-menu">
+                    <li><a href="{{route("blog")}}"><i class="fa fa-angle-right"></i>&nbsp; Tất cả bài viết</a></li>
                     @foreach ($topic as $item)
                     <li><a href="{{route("blog", ["topic_id"=> $item->id])}}"><i class="fa fa-angle-right"></i>&nbsp; {{$item->name}}</a></li>
                     @endforeach

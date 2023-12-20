@@ -12,10 +12,11 @@ use App\Http\Controllers\MembercardController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\sizeController;
+use App\Http\Controllers\SizeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CommentController;
 
 
 // front End
@@ -34,7 +35,11 @@ Route::get('blog-detail',[HomeController::class, "blog_detail"])->name("blog_det
                                 // search
 Route::get('search',[HomeController::class, "search"])->name("search");
                                 //comment
-                                
+
+Route::get('comment',[CommentController::class, "index"])->name("comment");                                
+Route::post('create-product-comment',[CommentController::class, "create_product_comment"])->name("create_product_comment");
+Route::post('create-post-comment',[CommentController::class, "create_post_comment"])->name("create_post_comment");
+
 
                                 // checkout
 Route::get('checkout',[HomeController::class, "checkout"])->name("checkout");

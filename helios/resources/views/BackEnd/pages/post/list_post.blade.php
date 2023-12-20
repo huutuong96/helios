@@ -85,6 +85,7 @@
                                                 @else
                                                     <a class="btn btn-sm btn-danger mx-3" href="{{route("change_stutus_post",["id" => $row->id])}}" style="width:60%; margin:5%"><i class="fa fa-toggle-off"></i> Tạm ngưng</a>
                                                 @endif
+                                                <a class="btn btn-sm btn-primary" href="{{route("comment",["id"=>$row->id])}}" style="width:60%; margin:5%"><i class="fa fa-comment"></i> Bình luận</a><br>
                                                 <a class="btn btn-sm btn-info" href="{{route("edit_post", ["id" => $row->id])}}" style="width:60%; margin:5%"><i class="fa fa-edit"></i>Chỉnh sửa</a>
                                                 <a class="btn btn-sm btn-danger" href="{{route("change_stutus_post",["id" => $row->id, "status" => 0 ])}}" style="width:60%; margin:5%"><i class="fa fa-trash" style=" margin-right:10%"></i>   xóa</a>
                                             </td>

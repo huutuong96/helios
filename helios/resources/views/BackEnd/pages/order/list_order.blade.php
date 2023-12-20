@@ -129,9 +129,9 @@
                                                 {{--  hủy đơn --}}
                                                     <a class="btn btn-sm btn-danger" href="" style="width:80%; margin:2%"><i class="fa fa-trash"></i> Hủy đơn</a>
                                                 @endif
-                                                @if($row->status == 4)
-                                                    <a class="btn btn-sm btn-warning" href="{{route("change_stutus_order",["id"=>$row->id, "status" => 0])}}" style="width:80%; margin:2%"><i class="fa fa-trash"></i> Lưu giữ</a>
-                                                @endif
+                                                {{-- @if($row->status == 4)
+                                                    <a class="btn btn-sm btn-warning" href="{{route("change_stutus_order",["id"=>$row->id, "status" => 4])}}" style="width:80%; margin:2%"><i class="fa fa-trash"></i> Lưu giữ</a>
+                                                @endif --}}
 
                                                 <div class="modal fade" id="modal" style="width: 100%;">
                                                     <div class="modal-dialog" >

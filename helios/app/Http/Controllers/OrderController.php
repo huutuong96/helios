@@ -18,9 +18,9 @@ function index(Request $rqt) {
     $number = 7;
 
     if (isset($rqt->act)) {
-        $list_order = order::where("status", 0)->orderby("id", "desc")->paginate($number);
+        $list_order = order::where("status", 4)->orderby("id", "desc")->paginate($number);
     } else {
-        $list_order = order::where("status", "!=", 0)->orderby("id", "desc")->paginate($number);
+        $list_order = order::where("status", "!=", 4)->orderby("id", "desc")->paginate($number);
     }
 
     $member_card = membercard::all();
@@ -66,6 +66,9 @@ function index(Request $rqt) {
         $order = order::where("id", $rqt->id)->first();
         $order->status = $rqt->status;
         $rqt->session()->put("messenge",["style"=>"success", "msg"=>"Cập nhật trạng thái đơn hàng thành công"]);
+        if($rqt->status == 4){
+            $rqt->session()->put("messenge",["style"=>"success", "msg"=>"Đơn hàng đã được lưu trữ vì đã đến tay người tiêu dùng"]);
+        }
         $order->save();
         return back();
     }

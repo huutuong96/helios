@@ -31,7 +31,7 @@
                         <div class="info-box-content">
                             <span class="info-box-text">Sản phẩm</span>
                             <span class="info-box-number">
-                                5
+                                {{count($sumProduct)}}
                             </span>
                         </div>
                         <!-- /.info-box-content -->
@@ -45,7 +45,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Danh mục</span>
-                            <span class="info-box-number">6</span>
+                            <span class="info-box-number">{{count($category)}}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -61,8 +61,8 @@
                         <span class="info-box-icon bg-success elevation-1"><i class="fas fa-shopping-cart"></i></span>
 
                         <div class="info-box-content">
-                            <span class="info-box-text">Đơn hàng</span>
-                            <span class="info-box-number">10</span>
+                            <span class="info-box-text">Đơn hàng cần xử lý</span>
+                            <span class="info-box-number">{{count($order)}}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -75,7 +75,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">Thành viên</span>
-                            <span class="info-box-number">2</span>
+                            <span class="info-box-number">{{count($user)}}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -85,10 +85,10 @@
             </div>
             <!-- /.row -->
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title">Thống kê sản phẩm</h5>
+                            <h5 class="card-title">Thống kê sản phẩm theo danh mục</h5>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
@@ -126,26 +126,14 @@
                     <!-- /.card -->
                 </div>
                 <!-- /.col -->
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title">Thống kê danh mục</h5>
+                            <h5 class="card-title">Thống kê số lượng sản phẩm đã bán ra theo danh mục</h5>
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                     <i class="fas fa-minus"></i>
                                 </button>
-                                <!-- <div class="btn-group">
-                                    <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
-                                        <i class="fas fa-wrench"></i>
-                                    </button>
-                                    <div class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <a href="#" class="dropdown-item">Action</a>
-                                        <a href="#" class="dropdown-item">Another action</a>
-                                        <a href="#" class="dropdown-item">Something else here</a>
-                                        <a class="dropdown-divider"></a>
-                                        <a href="#" class="dropdown-item">Separated link</a>
-                                    </div>
-                                </div> -->
                                 <button type="button" class="btn btn-tool" data-card-widget="remove">
                                     <i class="fas fa-times"></i>
                                 </button>
@@ -172,7 +160,10 @@
     <!-- /.content -->
 </div>
 <!-- /.content-wrapper -->
-
+@php
+    $jsonData_by_category = json_encode($count_product_by_categori);
+    $jsonData_by_order = json_encode($count_product_by_order);
+@endphp
 @endsection
 
 @section('script')
@@ -183,60 +174,36 @@
     google.charts.load('current', {
         'packages': ['corechart']
     });
-    google.charts.setOnLoadCallback(drawChart);
+    google.charts.setOnLoadCallback(drawProductChart);
+    google.charts.setOnLoadCallback(drawCategoryChart);
 
-    // Draw the chart and set the chart values
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Tên', 'Số lượng sản phẩm']
-            // foreach ($product_by_category as $row) {
-            //     extract($row);
-            //     echo "['$name', $so_luong_san_pham],";
-            // }
-            
-        ]);
+    // Draw the product chart and set the chart values
+    function drawProductChart() {
+        var productData = google.visualization.arrayToDataTable(JSON.parse('<?php echo $jsonData_by_category; ?>'));
 
         // Optional; add a title and set the width and height of the chart
-        var options = {
+        var productOptions = {
             'title': 'Thống kê sản phẩm theo danh mục',
         };
 
-        // Display the chart inside the <div> element with id="piechart"
-        var chart = new google.visualization.ColumnChart(document.getElementById('statistic_product_by_category'));
-        chart.draw(data, options);
+        // Display the chart inside the <div> element with id="statistic_product_by_category"
+        var productChart = new google.visualization.ColumnChart(document.getElementById('statistic_product_by_category'));
+        productChart.draw(productData, productOptions);
     }
-</script>
-<script type="text/javascript">
-    // Load google charts
-    google.charts.load('current', {
-        'packages': ['corechart']
-    });
-    google.charts.setOnLoadCallback(drawChart);
 
-    // Draw the chart and set the chart values
-    function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-            ['Trạng thái', 'Danh mục']
-            // foreach ($category_status as $cat_stat) {
-            //     extract($cat_stat);
-            //     if ($status == 1) {
-            //         $status = "Đang hoạt động";
-            //     } else {
-            //         $status = "Đang chờ hoạt động";
-            //     }
-            //     echo "['$status', $so_luong_danh_muc],";
-            // }
-            
-        ]);
+    // Draw the category chart and set the chart values
+    function drawCategoryChart() {
+        var categoryData = google.visualization.arrayToDataTable(JSON.parse('<?php echo $jsonData_by_order; ?>'));
 
         // Optional; add a title and set the width and height of the chart
-        var options = {
+        var categoryOptions = {
             'title': 'Thống kê danh mục hoạt động',
         };
 
-        // Display the chart inside the <div> element with id="piechart"
-        var chart = new google.visualization.ColumnChart(document.getElementById('statistic_category'));
-        chart.draw(data, options);
+        // Display the chart inside the <div> element with id="statistic_category"
+        var categoryChart = new google.visualization.ColumnChart(document.getElementById('statistic_category'));
+        categoryChart.draw(categoryData, categoryOptions);
     }
 </script>
+
 @endsection

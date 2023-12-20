@@ -6,24 +6,26 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Pagination\Paginator;
 use App\Models\Config;
-use App\Models\user;
-use App\Models\banner;
+use App\Models\User;
+use App\Models\Banner;
 use App\Models\Product;
 use App\Models\Product_image;
 use App\Models\Post;
-use App\Models\topic;
+use App\Models\Topic;
 use App\Models\Brand;
 use App\Models\Size;
-use App\Models\category;
+use App\Models\Category;
 use App\Models\MemberCard;
 use App\Models\Sizedetail;
 use App\Models\Order;
 use App\Models\Orderdetail;
+use App\Models\ProductComment;
+use App\Models\BlogComment;
 
 class HomeController extends Controller
 {
     function index(){
-        $config = config::all()[0];
+        $config = Config::all()[0];
 
         //lấy banner và ảnh quảng cáo
         $left_banner = banner::where("position", "slider")->where("status", 1)->where("orders", "left")->get();
@@ -78,9 +80,12 @@ class HomeController extends Controller
 
     function shop(Request $rqt){
         define('ALL_MATERIAL', ['Vàng 10K', 'Vàng 14K', 'Vàng 18K', 'Vàng 20K', 'Vàng 24K']);
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $number = $rqt->number ?? 6;
-        $list_product = Product::where("status", 1)->orderby($rqt->key ?? "id", $rqt->value ?? "desc")->paginate($number);
+        $list_product = Product::where("status", 1)->where($rqt->category_id ?? "status", $rqt->id ?? 1)->orderby($rqt->key ?? "id", $rqt->value ?? "desc")->paginate($number);
+        if(isset($rqt->min) && isset($rqt->max)){
+            $list_product = Product::where("status", 1)->whereBetween('price', [$rqt->min, $rqt->max])->orderby($rqt->key ?? "id", $rqt->value ?? "asc")->paginate($number);
+        }
         foreach ($list_product as $key => $value) {
             $list_product_image = Product_image::where("product_id", $value->id)->get();
             $categori_name = Category::where("id", $value->category_id)->first() ;
@@ -176,9 +181,9 @@ class HomeController extends Controller
         }
         
     }
-
+    
     function product_detail(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $product = product::where("id", $rqt->id)->first();
         $list_size = Sizedetail::where("id_product", $product->id)->get();
         $list = size::all();
@@ -199,11 +204,22 @@ class HomeController extends Controller
 
         $list_img = Product_image::where("product_id", $rqt->id)->get();
         $product["list_img"] = $list_img;
-        return view("FrontEnd.pages.product_detail",compact("product", "config", "list_product_related", "list_size"));
+
+        //lay binh luan
+        $limit_number = ProductComment::where("product_id", $rqt->id)->get();
+        $limit_number = count($limit_number)-4;
+        $comments = ProductComment::where("product_id", $rqt->id)->limit(4)->orderby("id", "desc")->get();
+        foreach ($comments as $key => $comment) {
+            $user = user::where("id", $comment->user_id)->first();
+            $comment["user_img"] = $user->img;
+            $comment["user_name"] = $user->username;
+        }
+        $comments = $comments->reverse();
+        return view("FrontEnd.pages.product_detail",compact("product", "config", "list_product_related", "list_size", "comments"));
     }
 
     function checkout(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $cart = $rqt->session()->get("cart");
         $cart = $cart["products"] ?? [];
        
@@ -217,7 +233,7 @@ class HomeController extends Controller
         return view("FrontEnd.pages.checkout", compact("config", "cart", "top_view", "rank"));
     }
     function cart(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $cart = $rqt->session()->get("cart");
         $cart = $cart["products"] ?? [];
        
@@ -231,7 +247,7 @@ class HomeController extends Controller
     }
 
     function register(){
-        $config = config::all()[0];
+        $config = Config::all()[0];
 
         //lấy banner và ảnh quảng cáo
         $left_banner = banner::where("position", "slider")->where("status", 1)->where("orders", "left")->get();
@@ -245,7 +261,7 @@ class HomeController extends Controller
      }
 
     function login(){
-        $config = config::all()[0];
+        $config = Config::all()[0];
 
         //lấy banner và ảnh quảng cáo
         $left_banner = banner::where("position", "slider")->where("status", 1)->where("orders", "left")->get();
@@ -284,7 +300,7 @@ class HomeController extends Controller
     }
 
     function blog(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $number = 10;
         if(isset($rqt->topic_id)){
             $blog_list = post::where("status","!=",0)->where("topic_id",$rqt->topic_id)->orderby("id", "desc")->paginate($number);
@@ -295,24 +311,30 @@ class HomeController extends Controller
         return view("FrontEnd.pages.blog", compact("config", "blog_list", "topic"));
     }
     function blog_detail(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $blog = post::where("id", $rqt->id)->first();
-        return view("FrontEnd.pages.blog_detail", compact("config", "blog"));
+        $comments = BlogComment::where("post_id", $rqt->id)->limit(4)->get();
+        foreach ($comments as $key => $comment) {
+            $user = user::where("id", $comment->user_id)->first();
+            $comment["user_img"] = $user->img;
+            $comment["user_name"] = $user->username;
+        }
+        return view("FrontEnd.pages.blog_detail", compact("config", "blog","comments"));
     }
 
     function account(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $member_rank = MemberCard::where("id", auth::user()->rank_id)->first();
         return view("FrontEnd.pages.account", compact("config", "member_rank"));
     }
 
     function account_detail(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         return view("FrontEnd.pages.account_detail", compact("config"));
     }
 
     function account_orders(Request $rqt){
-       $config = config::all()[0];
+       $config = Config::all()[0];
        $list_order = Order::where("user_id", auth::user()->id)->get();
        
        foreach ($list_order as $key => $order) {
@@ -327,7 +349,7 @@ class HomeController extends Controller
     }
 
     function view_orders(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $list_id_product = Orderdetail::where("order_id", $rqt->id)->get();
         $list_product = [];
         foreach ($list_id_product as $key => $value) {
@@ -344,7 +366,7 @@ class HomeController extends Controller
      }
 
      function wishlist(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $wishlist = $rqt->session()->get("wishlist");
         $wishlist = $wishlist["products"];
         // dd($wishlist);
@@ -397,7 +419,7 @@ class HomeController extends Controller
 
     function search(Request $rqt){
         $keyword = $rqt->keyword;
-        $config = config::all()[0];
+        $config = Config::all()[0];
         $number = 9;
         if(isset($rqt->act) && $rqt->act == "blog"){
             $topic = topic::all();
@@ -415,7 +437,7 @@ class HomeController extends Controller
     }
 
     function contact(Request $rqt){
-        $config = config::all()[0];
+        $config = Config::all()[0];
         return view("FrontEnd.pages.contact", compact("config"));
     }
 }

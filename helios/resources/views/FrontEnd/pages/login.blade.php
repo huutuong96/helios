@@ -37,7 +37,7 @@
                             @csrf
                             <ul class="form-list">
                                 <li>
-                                    <label for="username">Email <span class="required">*</span></label>
+                                    <label for="username">Tên tài khoản <span class="required">*</span></label>
                                     <br>
                                     <input type="text" title="username Address" class="input-text required-entry" id="username" name="username" value="{{old("username" ?? "")}}">
                                 </li>

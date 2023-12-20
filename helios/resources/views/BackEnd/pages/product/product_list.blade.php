@@ -109,18 +109,19 @@
                                                 <br><br>- <b>Số lượng bán</b>:{{$row['sold_count']}}<br><br>
                                             </td>
                                             <td class="text-center">
-                                                @if ($row['quantity'] > 0)
-                                                    @if($row['status'] == 1)
-                                                        <a class="btn btn-sm btn-success" href="{{route("change_stutus_product",["id"=>$row['id']])}}" style="width:80%; margin:5%"><i class="fa fa-toggle-on"></i> Còn hàng</a>
+                                                @if ($row->quantity > 0)
+                                                    @if($row->status == 1)
+                                                        <a class="btn btn-sm btn-success" href="{{route("change_stutus_product",["id"=>$row->id])}}" style="width:80%; margin:5%"><i class="fa fa-toggle-on"></i> Còn hàng</a>
                                                     @else
-                                                        <a class="btn btn-sm btn-danger"  href="{{route("change_stutus_product",["id"=>$row['id']])}}" style="width:80%; margin:5%"><i class="fa fa-toggle-off"></i> Hết hàng</a>
+                                                        <a class="btn btn-sm btn-danger"  href="{{route("change_stutus_product",["id"=>$row->id])}}" style="width:80%; margin:5%"><i class="fa fa-toggle-off"></i> Hết hàng</a>
                                                     @endif
                                                 @else
                                                     <a class="btn btn-sm btn-danger" style="width:80%; margin:5%"><i class="fa fa-toggle-off"></i> Hết hàng</a>
                                                 @endif
                                                 <br>
-                                                <a class="btn btn-sm btn-info" href="{{route("edit_product",["id"=>$row['id']])}}" style="width:80%; margin:5%"><i class="fa fa-edit"></i> Cập nhật</a><br>
-                                                <a class="btn btn-sm btn-danger" href="{{route("change_stutus_product",["id"=>$row['id'], "status"=>0])}}" style="width:80%; margin:5%"><i class="fa fa-trash"></i> Xóa</a>
+                                                <a class="btn btn-sm btn-primary" href="{{route("comment",["id"=>$row->id, "product" =>"product"])}}" style="width:80%; margin:5%"><i class="fa fa-comment"></i> Bình luận</a><br>
+                                                <a class="btn btn-sm btn-info" href="{{route("edit_product",["id"=>$row->id, "product" =>"product"])}}" style="width:80%; margin:5%"><i class="fa fa-edit"></i> Cập nhật</a><br>
+                                                <a class="btn btn-sm btn-danger" href="{{route("change_stutus_product",["id"=>$row->id, "status"=>0])}}" style="width:80%; margin:5%"><i class="fa fa-trash"></i> Xóa</a>
                                             </td>
                                         </tr>
                                     @endforeach

@@ -34,11 +34,24 @@
                         <h2>Bình luận</h2>
                     </div> 
                     <div class="comment-list">
-                        chưa làm
-                       {{-- dùng ajax để show ra bình luận  chưa làm --}}
+                        <ul class="comments-list">
+                            @if ($comments->isEmpty())
+                                Chưa có bình luận nào cho bài viết này
+                            @else 
+                               @foreach($comments as $comment)
+                                   <li class="comment" style="display: flex; margin: 5px">
+                                     <div class="user-img"><img src="{{asset("public/images/user/".$comment->user_img ??user.jpg)}}" alt="" style="height: 60px; width: 60px;; border-radius: 100%"><br></div>
+                                     <div class="comment-content" style="margin: 5px 20px">
+                                       <b>{{$comment->user_name}}</b><br>
+                                       <span>{{$comment->detail}}</span>
+                                     </div>
+                                   </li>
+                               @endforeach
+                            @endif
+                         </ul>
                     </div>
                 </div>
-                <form action="index.php?option=page&act=post-comment" method="post" enctype="multipart/form-data">
+                <form action="{{route("create_post_comment")}}" method="post" >
                     @csrf 
                     <div class="single-box comment-box">
                         <div class="best-title text-left">

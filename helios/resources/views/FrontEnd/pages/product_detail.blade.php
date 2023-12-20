@@ -118,14 +118,32 @@
               </div>
             </div>
             <div class="tab-pane fade" id="product_tabs_tags">
+              <ul class="comments-list">
+                 @if ($comments->isEmpty())
+                     Chưa có bình luận nào cho sản phẩm này
+                 @else 
+                    @foreach($comments as $comment)
+                        <li class="comment" style="display: flex; margin: 5px">
+                          <div class="user-img"><img src="{{asset("public/images/user/".$comment->user_img ??user.jpg)}}" alt="" style="height: 60px; width: 60px;; border-radius: 100%"><br></div>
+                          <div class="comment-content" style="margin: 5px 20px">
+                            <b>{{$comment->user_name}}</b><br>
+                            <span>{{$comment->detail}}</span>
+                          </div>
+                        </li>
+                    @endforeach
+                 @endif
+              </ul>
               <div class="box-collateral box-tags">
                 <div class="tags">
-                  <form id="addTagForm" action="#" method="get">
+                  <form id="" action="{{route("create_product_comment")}}" method="post">
+                    @csrf
                     <div class="form-add-tags">
                       <label for="productTagName">Thêm bình luận:</label>
                       <div class="input-box">
-                        <input class="input-text" name="productTagName" id="productTagName" type="text">
-                        <button type="button" title="Add Tags" class=" button btn-add" onClick="submitTagForm()"> <span>Gửi</span></button>
+                        <input type="hidden" name="product_id" id="" value="{{ $product->id}}">
+                        <input type="hidden" name="user_id" id="" value="{{ Auth::user()->id ?? ""}}">
+                        <input class="input-text" name="detail" id="productTagName" type="text">
+                        <button type="submit" title="Add Tags" class=" button btn-add"> <span>Gửi</span></button>
                       </div>
                       <!--input-box--> 
                     </div>

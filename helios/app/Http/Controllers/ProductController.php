@@ -8,8 +8,8 @@ use App\Models\Product;
 use App\Models\Product_image;
 use App\Models\Category;
 use App\Models\Brand;
-use App\Models\size;
-use App\Models\sizedetail;
+use App\Models\Size;
+use App\Models\Sizedetail;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
