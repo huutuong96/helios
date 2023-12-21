@@ -1,10 +1,11 @@
 
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
         <!-- Brand Logo -->
-        <a href="{{route("dashboard")}}" class="brand-link">
-            <img src="{{asset("public/images/config/logo.png")}}" alt="Fabulous Logo" class="brand-image mx-auto my-auto" style="opacity: .8">
-            <span class="brand-text font-weight-light">admin</span>
-        </a>
+        <div  class="brand-link">
+            <a href="{{route("index")}}"><img src="{{asset("public/images/config/logo.png")}}" alt="Fabulous Logo" class="brand-image mx-auto my-auto" style="opacity: .8"></a>
+            <a href="{{route("dashboard")}}"><span class="brand-text font-weight-light" style="color:aliceblue">admin</span></a>
+            
+        </div>
 
         <!-- Sidebar -->
         <div class="sidebar">

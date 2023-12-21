@@ -368,8 +368,9 @@ class HomeController extends Controller
      function wishlist(Request $rqt){
         $config = Config::all()[0];
         $wishlist = $rqt->session()->get("wishlist");
-        $wishlist = $wishlist["products"];
-        // dd($wishlist);
+        if($wishlist){
+            $wishlist = $wishlist["products"];
+        }
         return view("FrontEnd.pages.wishlist", compact("config", "wishlist"));
     }
 
