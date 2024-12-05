@@ -7,34 +7,35 @@
     <title>Helios E-Commerece Jewelry Website</title>
 
     <!-- Favicons Icon -->
-    <link rel="icon" href="{{asset("images/favicon.ico")}}" type="image/x-icon" />
+    <link rel="icon" href="<?php echo e(asset("images/favicon.ico")); ?>" type="image/x-icon" />
 
     <!-- Mobile Specific -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
     <!-- CSS Style -->
-    <link rel="stylesheet" type="text/css" href="{{asset("css/styles.css")}}" media="all">
-    @yield('css')
+    <link rel="stylesheet" type="text/css" href="<?php echo e(asset("css/styles.css")); ?>" media="all">
+    <?php echo $__env->yieldContent('css'); ?>
 </head>
 
 <body class="cms-index-index cms-home-page">
-    @if(Session::has('messenge') && is_array(Session::get('messenge')))
-        @php
+    <?php if(Session::has('messenge') && is_array(Session::get('messenge'))): ?>
+        <?php
             $messenge = Session::get('messenge');
-        @endphp
-        @if(isset($messenge['style']) && isset($messenge['msg']))
-            <div class="alert alert-{{ $messenge['style'] }}" role="alert" style="position: fixed; top: 20px; right: 90px; width: auto; z-index: 9999; height: 50px; font-size: 15px;" id="myAlert">
-                {{ $messenge['msg'] }}
+        ?>
+        <?php if(isset($messenge['style']) && isset($messenge['msg'])): ?>
+            <div class="alert alert-<?php echo e($messenge['style']); ?>" role="alert" style="position: fixed; top: 20px; right: 90px; width: auto; z-index: 9999; height: 50px; font-size: 15px;" id="myAlert">
+                <?php echo e($messenge['msg']); ?>
+
             </div>
-            @php
+            <?php
                 Session::forget('messenge');
-            @endphp
-        @endif
-    @endif
+            ?>
+        <?php endif; ?>
+    <?php endif; ?>
 
     <!-- Mobile Menu -->
    
-    @include('FrontEnd.models.top_menu')
+    <?php echo $__env->make('FrontEnd.models.top_menu', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <div id="page">
         <!-- Header -->
         <header>
@@ -43,13 +44,13 @@
                     <div class="row" style="display: flex">
                         <div class="col-lg-3 col-sm-3 col-xs-12">
                             <div class="logo">
-                                <a title="Helios E-Commerece" href="{{route("index")}}">
-                                    <img alt="Helios E-Commerece" src="{{asset("public/public/images/config/".$config->logo)}}" style="position:absolute;top:10px;left:-5px">
+                                <a title="Helios E-Commerece" href="<?php echo e(route("index")); ?>">
+                                    <img alt="Helios E-Commerece" src="<?php echo e(asset("public/public/images/config/".$config->logo)); ?>" style="position:absolute;top:10px;left:-5px">
                                 </a>
                             </div>
                             <div class="nav-icon" style="margin-top:40px">
                                
-                                @include('FrontEnd.models.mega_menu')
+                                <?php echo $__env->make('FrontEnd.models.mega_menu', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                             </div>
                         </div>
                         <div class="col-lg-9 col-sm-9 col-xs-12 jtv-rhs-header">
@@ -59,8 +60,8 @@
                             <div class="jtv-header-box">
                                 <div class="search_cart_block">
                                     <div class="search-box hidden-xs">
-                                        <form id="search_mini_form" action="{{route("search")}}" method="get">
-                                            @csrf
+                                        <form id="search_mini_form" action="<?php echo e(route("search")); ?>" method="get">
+                                            <?php echo csrf_field(); ?>
                                             <input id="search" type="text" name="keyword" class="searchbox" placeholder="Nhập từ khoá tìm kiếm...." maxlength="128">
                                             <button type="submit" title="Search" class="search-btn-bg" id="submit-button"><span class="hidden-sm">Tìm kiếm</span>
                                                 <i class="fa fa-search hidden-xs hidden-lg hidden-md"></i>
@@ -71,7 +72,7 @@
                                         <div class="menu_top">
                                             <div class="top-cart-contain pull-right">
                                                 <div class="mini-cart">
-                                                    @php
+                                                    <?php
                                                     $cart = Session::get("cart"); 
                                                        if($cart  && isset($cart["products"])){
                                                             $number = count($cart["products"]);
@@ -83,31 +84,30 @@
                                                             $number = 0;
                                                             $price_all = 0;
                                                         }
-                                                    @endphp
-                                                    test
-                                                    <div class="basket"><a class="basket-icon" href="#"><i class="fa fa-shopping-basket"></i> Giỏ hàng <span>{{$number}}</span></a>
+                                                    ?>
+                                                    <div class="basket"><a class="basket-icon" href="#"><i class="fa fa-shopping-basket"></i> Giỏ hàng <span><?php echo e($number); ?></span></a>
                                                       <div class="top-cart-content"  style="position: fixed; top: 8%; right: 9%; width: 343px">
-                                                            @if($cart!=null  && isset($cart["products"]))
+                                                            <?php if($cart!=null  && isset($cart["products"])): ?>
                                                                 <div class="block-subtitle">
-                                                                    <div class="top-subtotal">{{$number}} sản phẩm, <span class="price">{{number_format($price_all)}} VND</span></div>
+                                                                    <div class="top-subtotal"><?php echo e($number); ?> sản phẩm, <span class="price"><?php echo e(number_format($price_all)); ?> VND</span></div>
                                                                 </div>
                                                                 <ul class="mini-products-list" id="cart-sidebar" style="">
-                                                                    @foreach ($cart["products"] as $item)
+                                                                    <?php $__currentLoopData = $cart["products"]; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                         <li class="item">
-                                                                            <div class="item-inner"><a class="product-image" title="Product tilte is here" href="product-detail.html"><img alt="Product tilte is here" src="{{asset("public/public/images/product/".$item->list_image[0]->image)}}"></a>
+                                                                            <div class="item-inner"><a class="product-image" title="Product tilte is here" href="product-detail.html"><img alt="Product tilte is here" src="<?php echo e(asset("public/public/images/product/".$item->list_image[0]->image)); ?>"></a>
                                                                             <div class="product-details">
-                                                                                <div class="access"><a class="btn-remove1" title="Remove This Item" href="#">Xem chi tiết</a> <a class="btn-edit" title="Edit item" href="{{route("destroy_product_in_cart", ["id"=>$item->id])}}"><i class="fa fa-trash"></i></a> </div>
-                                                                                <p class="product-name"><a href="product-detail.html">{{$item->name}}</a></p>
-                                                                                <strong>{{$item->number}}</strong> x <span class="price">{{number_format($item->price)}}--size:{{$item->size}}</span></div>
+                                                                                <div class="access"><a class="btn-remove1" title="Remove This Item" href="#">Xem chi tiết</a> <a class="btn-edit" title="Edit item" href="<?php echo e(route("destroy_product_in_cart", ["id"=>$item->id])); ?>"><i class="fa fa-trash"></i></a> </div>
+                                                                                <p class="product-name"><a href="product-detail.html"><?php echo e($item->name); ?></a></p>
+                                                                                <strong><?php echo e($item->number); ?></strong> x <span class="price"><?php echo e(number_format($item->price)); ?>--size:<?php echo e($item->size); ?></span></div>
                                                                             </div>
                                                                         </li> 
-                                                                    @endforeach 
+                                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?> 
                                                                 </ul>
                                                                 <div class="actions" style="display: flex; justify-content: space-between" > 
-                                                                    <a href="{{route("cart")}}" class="view-cart"><span>giỏ hàng</span></a>
-                                                                    <a href="{{route("checkout")}}" class="view-cart"><span>Thanh Toán</span></a>
+                                                                    <a href="<?php echo e(route("cart")); ?>" class="view-cart"><span>giỏ hàng</span></a>
+                                                                    <a href="<?php echo e(route("checkout")); ?>" class="view-cart"><span>Thanh Toán</span></a>
                                                                 </div>
-                                                            @endif
+                                                            <?php endif; ?>
                                                       </div>
                                                     </div>
                                                   </div>
@@ -117,7 +117,7 @@
                                 </div>
                                 <div class="top_section hidden-xs">
                                     <div class="toplinks">
-                                        @include('FrontEnd.models.top_menu')
+                                        <?php echo $__env->make('FrontEnd.models.top_menu', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                                     </div>
                                 </div>
                             </div>
@@ -131,11 +131,11 @@
     <!-- Revslider -->
 
 
-    {{-- main --}}
+    
 
-    @yield('main')
+    <?php echo $__env->yieldContent('main'); ?>
 
-    {{-- end main --}}
+    
 
  
     <!-- Footer -->
@@ -175,7 +175,7 @@
                             <li><a href="about-us.html">Về Chúng Tôi</a></li>
                             <li><a href="">FAQs</a></li>
                             <li><a href="#">Phương Thức Vận Chuyển</a></li>
-                            <li><img alt="Helios E-Commerece" src="{{asset("public/public/images/config/".$config->logo)}}"  style="position: absolute;bottom: -99px;left: -40px;"></li>
+                            <li><img alt="Helios E-Commerece" src="<?php echo e(asset("public/public/images/config/".$config->logo)); ?>"  style="position: absolute;bottom: -99px;left: -40px;"></li>
                         </ul>
                     </div>
                     <div class="col-xs-12 col-lg-3 col-md-4 col-sm-6">
@@ -196,7 +196,7 @@
                         </div>
                         <div class="payment-accept">
                             <h4>Secure Payment</h4>
-                            <div class="payment-icon"><img src="{{asset("images/orther/paypal.png")}}" alt="paypal"> <img src="{{asset("images/orther/visa.png")}}" alt="visa"> <img src="{{asset("images/orther/american-exp.png")}}" alt="american express"> <img src="{{asset("images/orther/mastercard.png")}}" alt="mastercard"></div>
+                            <div class="payment-icon"><img src="<?php echo e(asset("images/orther/paypal.png")); ?>" alt="paypal"> <img src="<?php echo e(asset("images/orther/visa.png")); ?>" alt="visa"> <img src="<?php echo e(asset("images/orther/american-exp.png")); ?>" alt="american express"> <img src="<?php echo e(asset("images/orther/mastercard.png")); ?>" alt="mastercard"></div>
                         </div>
                     </div>
                 </div>
@@ -213,14 +213,14 @@
     </div>
   
     <!-- JavaScript -->
-    <script src="{{asset("js/jquery.min.js")}}"></script>
-    <script src="{{asset("js/bootstrap.min.js")}}"></script>
-    <script src="{{asset("js/main.js")}}"></script>
-    <script src="{{asset("js/revslider.js")}}"></script>
-    <script src="{{asset("js/owl.carousel.min.js")}}"></script>
-    <script src="{{asset("js/countdown.js")}}"></script>
-    <script src="{{asset("js/mob-menu.js")}}"></script>
-    <script src="{{asset("js/cloud-zoom.js")}}"></script>
+    <script src="<?php echo e(asset("js/jquery.min.js")); ?>"></script>
+    <script src="<?php echo e(asset("js/bootstrap.min.js")); ?>"></script>
+    <script src="<?php echo e(asset("js/main.js")); ?>"></script>
+    <script src="<?php echo e(asset("js/revslider.js")); ?>"></script>
+    <script src="<?php echo e(asset("js/owl.carousel.min.js")); ?>"></script>
+    <script src="<?php echo e(asset("js/countdown.js")); ?>"></script>
+    <script src="<?php echo e(asset("js/mob-menu.js")); ?>"></script>
+    <script src="<?php echo e(asset("js/cloud-zoom.js")); ?>"></script>
   
     <script>
         jQuery(document).ready(function() {
@@ -318,5 +318,5 @@
         });
     </script>
     </body>
-     @yield('js')
-    </html>
+     <?php echo $__env->yieldContent('js'); ?>
+    </html><?php /**PATH E:\laragon\www\web_full\helios.nguyenhuutuong.top\resources\views/FrontEnd/index.blade.php ENDPATH**/ ?>
