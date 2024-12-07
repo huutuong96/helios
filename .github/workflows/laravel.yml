@@ -8,7 +8,6 @@ on:
 
 jobs:
   laravel-tests:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -33,3 +32,27 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan test
+
+  auto-merge:
+    needs: laravel-tests
+    runs-on: ubuntu-latest
+    if: ${{ success() }}
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+    - name: Configure Git
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+    - name: Ensure master exists
+      run: |
+        git fetch origin master || git checkout -b master origin/master
+    - name: Pull latest changes
+      run: git pull origin master
+    - name: Merge test into master
+      run: |
+        git checkout master
+        git merge test --no-ff -m "Auto merge test into master"
+    - name: Push Changes
+      run: |
+        git push origin master
