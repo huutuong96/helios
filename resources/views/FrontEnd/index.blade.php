@@ -139,7 +139,7 @@
 
  
     <!-- Footer -->
-    <footer>
+    <!-- <footer>
         <div class="footer-inner">
             <div style="padding-top:30px">
   
@@ -209,7 +209,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> -->
     </div>
   
     <!-- JavaScript -->
